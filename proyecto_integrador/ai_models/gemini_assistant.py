@@ -31,7 +31,7 @@ def get_gemini_client(gemini_config=None):
 
         _gemini_client = genai.Client(api_key=gemini_config["api_key"])
 
-        return _gemini_client
+    return _gemini_client
 
 
 def build_generate_content_config(system_role, tools, temperature=0.3, max_output_tokens=1024):
@@ -75,7 +75,7 @@ def get_gemini_response(system_role, prompt, gemini_config=None, temperature=0.3
                 contents=prompt.strip()
             )
 
-            return response.text
+        return response.text
 
     except Exception as e:
         return f"Error al obtener la respuesta de Gemini: {e}"
