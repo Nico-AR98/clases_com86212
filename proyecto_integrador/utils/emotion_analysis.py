@@ -12,12 +12,22 @@ emotion_detector = pipeline(
 )
 
 def analyze_emotion(text: str) -> dict[str, str | float]:
-    result = emotion_detector(text)[0]
+    
+    try:
+        result = emotion_detector(text)[0]
+    
+        return {
+            "emocion": result["label"],
+            "confianza": round(result["score"], 4),
+        }
 
-    return {
-        "emocion": result["label"],
-        "confianza": round(result["score"], 4),
-    }
+    except Exception as e:
+        print("[aviso] Hubo un error al ejecutar analyze_emotion: {e}")
+        return {
+            "emocion": "no identificada",
+            "confianza": 0.0
+        }
+
 
 if __name__ == "__main__":
     test_messages = [
