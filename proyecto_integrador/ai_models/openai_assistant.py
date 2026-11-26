@@ -1,6 +1,6 @@
-import os
+import os, asyncio
 from dotenv import load_dotenv
-from openai import OpenAI
+from openai import AsyncOpenAI
 
 load_dotenv()
 
@@ -29,7 +29,7 @@ def get_openai_client(openai_config=None):
         if openai_config is None:
             openai_config = get_openai_config()
 
-        _openai_client = OpenAI(api_key=openai_config["api_key"])
+        _openai_client = AsyncOpenAI(api_key=openai_config["api_key"])
 
     return _openai_client
 
@@ -37,7 +37,7 @@ def create_openai_chat(system_role):
     return [{'role': 'system', 'content': system_role}]
 
 
-def get_openai_response(system_role, prompt, openai_config=None, temperature=0.3, max_output_tokens=1024, tools=None, chat=None):
+async def get_openai_response(system_role, prompt, openai_config=None, temperature=0.3, max_output_tokens=1024, tools=None, chat=None):
     try:
         if openai_config is None:
             openai_config = get_openai_config()
@@ -64,7 +64,7 @@ def get_openai_response(system_role, prompt, openai_config=None, temperature=0.3
         if tools:
             params["tools"] = tools
 
-        response = openai_client.chat.completions.create(**params)
+        response = await openai_client.chat.completions.create(**params)
         text = response.choices[0].message.content
 
         if chat is not None:
@@ -75,13 +75,14 @@ def get_openai_response(system_role, prompt, openai_config=None, temperature=0.3
 
     except Exception as e:
         return f"Error al obtener la respuesta de OpenAI: {e}"
-        
 
-if __name__ == "__main__":
+
+async def main():
     system_role = "Sos un experto en el area de las finanzas y asesoras a usuarios sobre cómo invertir su dinero"
     temperature = 0.2
     prompt = "Me gustaria saber cómo invertir mi proximo aguinaldo"
-    config = get_openai_config()
-    print(f"Config de openai: {config}")
-    response = get_openai_response(system_role=system_role, prompt=prompt, temperature=temperature)
+    response = await get_openai_response(system_role=system_role, prompt=prompt, temperature=temperature)
     print(response)
+
+if __name__ == "__main__":
+    asyncio.run(main())

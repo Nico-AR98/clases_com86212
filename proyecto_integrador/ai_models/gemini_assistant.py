@@ -1,4 +1,4 @@
-import os
+import os, asyncio
 from dotenv import load_dotenv
 from google import genai
 from google.genai import types
@@ -48,13 +48,13 @@ def create_gemini_chat(system_role, tools, temperature=0.3, max_output_tokens=10
 
     gemini_client = get_gemini_client(gemini_config)
 
-    return gemini_client.chats.create(
+    return gemini_client.aio.chats.create(
         model=gemini_config["model"],
         config=build_generate_content_config(system_role, tools, temperature, max_output_tokens)
     )
 
 
-def get_gemini_response(system_role, prompt, gemini_config=None, temperature=0.3, max_output_tokens=1024, tools=None, chat=None):
+async def get_gemini_response(system_role, prompt, gemini_config=None, temperature=0.3, max_output_tokens=1024, tools=None, chat=None):
     try:
         if chat is not None:
             response = chat.send_message(prompt.strip())
@@ -64,7 +64,7 @@ def get_gemini_response(system_role, prompt, gemini_config=None, temperature=0.3
 
             gemini_client = get_gemini_client(gemini_config)
 
-            response = gemini_client.models.generate_content(
+            response = await gemini_client.aio.models.generate_content(
                 model=gemini_config["model"],
                 config=build_generate_content_config(
                     system_role,
@@ -81,11 +81,12 @@ def get_gemini_response(system_role, prompt, gemini_config=None, temperature=0.3
         return f"Error al obtener la respuesta de Gemini: {e}"
 
 
-if __name__ == "__main__":
+async def main():
     system_role = "Sos un experto en el area de las finanzas y asesoras a usuarios sobre cómo invertir su dinero"
     temperature = 0.2
     prompt = "Me gustaria saber cómo invertir mi proximo aguinaldo"
-    config = get_gemini_config()
-    print(f"Config de Gemini: {config}")
-    response = get_gemini_response(system_role=system_role, prompt=prompt, temperature=temperature)
+    response = await get_gemini_response(system_role=system_role, prompt=prompt, temperature=temperature)
     print(response)
+
+if __name__ == "__main__":
+    asyncio.run(main())
