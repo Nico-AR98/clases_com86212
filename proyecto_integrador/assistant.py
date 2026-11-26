@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 from pathlib import Path
 from ai_models.gemini_assistant import get_gemini_response, create_gemini_chat
-from utils import obtener_estado_de_cuenta
+from proyecto_integrador.tools.tool_functions import obtener_estado_de_cuenta
 
 load_dotenv()
 

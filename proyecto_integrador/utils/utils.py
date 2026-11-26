@@ -1,10 +1,20 @@
-def obtener_estado_de_cuenta() -> int:
-    """Obtiene el saldo actual (estado de cuenta) del usuario en pesos.
+def build_messages(system_role, prompt, history=None):
+    """Construye la lista de mensajes para enviar a Groq.
 
-    Usar esta funcion cuando el usuario pregunte por su saldo, su estado de
-    cuenta, cuanto dinero tiene disponible o quiera saber cuanto puede invertir.
+    Args:
+        system_role (str): Instrucciones del rol del sistema.
+        prompt (str): Mensaje del usuario.
+        history (list, optional): Historial de mensajes previos. Defaults to None.
 
     Returns:
-        El saldo actual de la cuenta del usuario, en pesos.
+        list: Lista de mensajes en el formato esperado por Groq.
     """
-    return 300000
+    messages = []
+    if system_role:
+        messages.append({"role": "system", "content": system_role})
+
+    if history:
+        messages.extend(history)
+
+    messages.append({"role": "user", "content": prompt})
+    return messages
