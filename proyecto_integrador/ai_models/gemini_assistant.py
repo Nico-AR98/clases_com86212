@@ -57,7 +57,7 @@ def create_gemini_chat(system_role, tools, temperature=0.3, max_output_tokens=10
 async def get_gemini_response(system_role, prompt, gemini_config=None, temperature=0.3, max_output_tokens=1024, tools=None, chat=None):
     try:
         if chat is not None:
-            response = chat.send_message(prompt.strip())
+            response = await chat.send_message(prompt.strip())
         else:
             if gemini_config is None:
                 gemini_config = get_gemini_config()
